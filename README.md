@@ -27,13 +27,41 @@ A organização do projeto segue uma estrutura modular, separando dados, treinam
 
 ---
 ## 3. Passo a Passo Para Execução
+## Preparando o Ambiente e Instalando o Detectron2
+Inicialmente, estando no ambiente de nuvem (Colab), altere o ambiente de execução para GPU. Depois, em uma célula, verifique a existência da GPU:
 
 ```python
 !nvidia-smi
 ```
 
----
+Se bem-sucedida, você verá algo como:
+```python
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.54.15              Driver Version: 550.54.15      CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------|
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|=========================================+========================+======================|
+|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |
+| N/A   58C    P0             29W /   70W |    5554MiB /  15360MiB |      0%      Default |
++-----------------------------------------------------------------------------------------+
+```
+Em seguida, adicione o arquivo zipado do seu dataset no formato COCO-like ao diretório /content do ambiente e execute:
+```python
+!unzip "PESSOA.v1-roboflow-instant-1--eval-.coco.zip"
+```
+Instale o Detectron2 no ambiente:
+```python
+!python -m pip install 'git+https://github.com/facebookresearch/detectron2.git'
+```
+## Configuração do Dataset e Treinamento do Modelo
+Nesta etapa, o código realiza o registro dos datasets no formato COCO, configurando os conjuntos de treino, validação e teste. Em seguida, prepara o modelo Faster R-CNN usando o Detectron2, definindo parâmetros essenciais como número de classes, taxa de aprendizado, tamanho do batch, número de iterações e pesos iniciais.
 
+O código também cria a pasta de saída para armazenar os resultados e executa o treinamento do modelo, ajustando os pesos para que ele aprenda a detectar pessoas nas imagens do dataset
+`Esta fase pode ser implementada usando /projeto-deteccao-pessoas/training/train.py. Lembre-se de substituir a classe "person" pelas classes específicas do seu dataset.`
+```python
+
+```
 ## 4. Exemplos de Resultados
 
 Após o treinamento do modelo, foram realizados testes de inferência sobre imagens não vistas durante o treinamento.  
