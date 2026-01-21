@@ -1,2 +1,2 @@
-# projeto-deteccao-pessoas
+# Projeto-deteccao-pessoas
 Avaliação de Inteligência Artificial 
