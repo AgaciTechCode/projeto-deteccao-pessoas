@@ -178,6 +178,17 @@ O modelo processa todas as imagens de teste e gera métricas como Average Precis
 O código de avaliação pode ser encontrado em `/projeto-deteccao-pessoas/results/metrics/evaluation.py`.
 ```python
 #evaluation.py
+
+from detectron2.evaluation import COCOEvaluator, inference_on_dataset
+from detectron2.data import build_detection_test_loader
+
+# Avaliamos apenas BBOX (caixas) para evitar o erro de segmentação que você teve
+evaluator = COCOEvaluator("person_test", output_dir="./output", tasks=("bbox",))
+val_loader = build_detection_test_loader(cfg, "person_test")
+
+print("--- MÉTRICAS DE DESEMPENHO ---")
+results = inference_on_dataset(predictor.model, val_loader, evaluator)
+print(results)
 ```
 
 ## Monitoramento em Tempo Real com Câmera
