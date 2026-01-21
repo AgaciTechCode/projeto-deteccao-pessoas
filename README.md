@@ -321,10 +321,13 @@ Os resultados consistem em:
 - Detecção visual de pessoas por meio de **bounding boxes**
 - Filtragem exclusiva da classe *person*
 - Salvamento das imagens processadas na pasta `results/images`
+
 `exemplo:`
   ![detecção visual de pessoas por bounding boxes](results/images/2.png)
 - Avaliação quantitativa utilizando métricas do padrão COCO (precisão, recall e AP), armazenadas em `results/metrics`
 
+`exemplo:`
+![avaliação quantitativa utilizando metricas COCO](results/images/metrics-COCO.jpg)
 
 Os testes demonstraram que o modelo é capaz de identificar corretamente indivíduos em diferentes cenários, mesmo com variações de iluminação, postura e número de pessoas presentes na cena.
 
