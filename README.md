@@ -322,7 +322,7 @@ Os resultados consistem em:
 - Filtragem exclusiva da classe *person*
 - Salvamento das imagens processadas na pasta `results/images`
 `exemplo:`
-  ![detecção visual de pessoas por bounding boxes](results/images/1.png)
+  ![detecção visual de pessoas por bounding boxes](results/images/2.png)
 - Avaliação quantitativa utilizando métricas do padrão COCO (precisão, recall e AP), armazenadas em `results/metrics`
 
 
