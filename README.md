@@ -327,7 +327,7 @@ Os testes demonstraram que o modelo é capaz de identificar corretamente indiví
 
 ---
 
-## 4. Aplicação em Segurança da Informação
+## 5. Aplicação em Segurança da Informação
 
 A detecção automática de pessoas possui aplicações diretas e relevantes na área de **Segurança da Informação**, especialmente quando integrada a sistemas de monitoramento físico e ciberfísico. Alguns exemplos incluem:
 
