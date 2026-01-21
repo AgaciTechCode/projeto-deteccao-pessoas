@@ -26,8 +26,15 @@ Principais tecnologias e ferramentas utilizadas:
 A organização do projeto segue uma estrutura modular, separando dados, treinamento, inferência, utilitários e resultados, facilitando manutenção, reprodutibilidade e extensões futuras.
 
 ---
+## 3. Passo a Passo Para Execução
 
-## 3. Exemplos de Resultados
+```python
+!nvidia-smi
+```
+
+---
+
+## 4. Exemplos de Resultados
 
 Após o treinamento do modelo, foram realizados testes de inferência sobre imagens não vistas durante o treinamento.  
 Os resultados consistem em:
