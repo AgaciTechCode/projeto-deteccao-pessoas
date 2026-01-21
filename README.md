@@ -58,10 +58,86 @@ Instale o Detectron2 no ambiente:
 Nesta etapa, o código realiza o registro dos datasets no formato COCO, configurando os conjuntos de treino, validação e teste. Em seguida, prepara o modelo Faster R-CNN usando o Detectron2, definindo parâmetros essenciais como número de classes, taxa de aprendizado, tamanho do batch, número de iterações e pesos iniciais.
 
 O código também cria a pasta de saída para armazenar os resultados e executa o treinamento do modelo, ajustando os pesos para que ele aprenda a detectar pessoas nas imagens do dataset
-`Esta fase pode ser implementada usando /projeto-deteccao-pessoas/training/train.py. Lembre-se de substituir a classe "person" pelas classes específicas do seu dataset.`
+Esta fase pode ser implementada usando `/projeto-deteccao-pessoas/training/train.py`. Lembre-se de substituir a classe "person" pelas classes específicas do seu dataset.`
 ```python
+#/train.py
+
+import torch, detectron2
+from detectron2.utils.logger import setup_logger
+setup_logger()
+
+import os, cv2, random
+from google.colab.patches import cv2_imshow
+from detectron2 import model_zoo
+from detectron2.engine import DefaultPredictor, DefaultTrainer
+from detectron2.config import get_cfg
+from detectron2.utils.visualizer import Visualizer
+from detectron2.data import MetadataCatalog, DatasetCatalog
+from detectron2.data.datasets import register_coco_instances
+
+# Registrando os datasets (usando os nomes das pastas que o zip criou)
+try:
+    register_coco_instances("person_train", {}, "/content/train/_annotations.coco.json", "/content/train")
+    register_coco_instances("person_valid", {}, "/content/valid/_annotations.coco.json", "/content/valid")
+    register_coco_instances("person_test", {}, "/content/test/_annotations.coco.json", "/content/test")
+except:
+    print("Datasets já registrados ou erro nos caminhos.")
+
+person_metadata = MetadataCatalog.get("person_train")
+cfg = get_cfg()
+cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
+cfg.DATASETS.TRAIN = ("person_train",)
+cfg.DATASETS.TEST = ("person_valid",) # Validação durante o treino
+cfg.DATALOADER.NUM_WORKERS = 2
+cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml")
+
+cfg.SOLVER.IMS_PER_BATCH = 2
+cfg.SOLVER.BASE_LR = 0.00025
+cfg.SOLVER.MAX_ITER = 1000 # Quantidade boa para 94 fotos
+cfg.SOLVER.STEPS = []
+
+# CORREÇÃO: Definindo 2 classes (0: objects, 1: person)
+cfg.MODEL.ROI_HEADS.NUM_CLASSES = 2
+
+# Adicionando a correção para o formato das máscaras
+
+cfg.OUTPUT_DIR = "/content/output"
+os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
+
+trainer = DefaultTrainer(cfg)
+trainer.resume_or_load(resume=False)
+trainer.train()
+```
+## Inferência e Visualização de Detecções do Modelo Treinado
+Aqui, o código carrega o modelo treinado e define o limiar mínimo de confiança para considerar uma detecção válida. Em seguida, realiza inferência em imagens de teste, filtrando apenas a classe person para exibir as pessoas detectadas.
+
+Os resultados são visualizados graficamente, com caixas delimitadoras sobrepostas em fundo preto, destacando os objetos detectados. Também é possível testar novas imagens externas, substituindo o caminho da imagem pelo da sua própria foto.
+O código desta etapa está em `/projeto-deteccao-pessoas/inference/test_model.py.`
+```python
+#test_model.py
 
 ```
+## Avaliação de Desempenho com Métricas COCO
+Nesta etapa, o sistema realiza a avaliação quantitativa do modelo utilizando o COCOEvaluator para calcular métricas de desempenho sobre o conjunto de teste. Apenas as bounding boxes são avaliadas, evitando problemas com segmentação de máscaras.
+
+O modelo processa todas as imagens de teste e gera métricas como Average Precision (AP) e recall, permitindo verificar a acurácia do detector de pessoas de forma objetiva. Os resultados são exibidos no console e podem ser salvos para análises posteriores.
+
+O código de avaliação pode ser encontrado em `/projeto-deteccao-pessoas/results/metrics/evaluation.py`.
+```python
+#evaluation.py
+```
+
+## Monitoramento em Tempo Real com Câmera
+Essa etapa permite monitoramento de vídeo em tempo real usando a câmera do dispositivo. O código inicializa a captura, converte frames em imagens processáveis e exibe a interface de streaming no navegador com sobreposição de informações.
+
+Para cada frame capturado, o modelo detecta pessoas (classe person) e exibe caixas delimitadoras sobre um canvas preto, junto com um contador do número de pessoas detectadas. O loop continua até o usuário interromper o monitoramento, permitindo avaliação dinâmica do modelo em cenários reais, útil para vigilância e sistemas de segurança.
+
+O código do monitoramento por webcam está em `/projeto-deteccao-pessoas/inference/webcam-monitoring.py`.
+```python
+#webcam-monitoring.py
+```
+
+
 ## 4. Exemplos de Resultados
 
 Após o treinamento do modelo, foram realizados testes de inferência sobre imagens não vistas durante o treinamento.  
